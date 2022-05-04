@@ -6,10 +6,13 @@
 */
 
 #include "CPM.hpp"
+#include "CommandLine.hpp"
 
-CPM::CPM(std::vector<std::string> args)
+CPM::CPM(std::vector<std::string> &args)
 {
-    std::cout << "CPM constructor" << std::endl; 
+    std::cout << typeid(this).name() << " constructor" << std::endl; 
+
+    new CommandLine(args);
 }
 
 CPM::~CPM()

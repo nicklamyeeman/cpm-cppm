@@ -9,6 +9,8 @@ set(LIB_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/)
 
+set(COMMON_SRC ${SRC_DIRECTORY}CommandLine.cpp)
+
 ##
 ## CPM
 ##
@@ -22,13 +24,16 @@ set(CPM_SRC_DIRECTORY ${SRC_DIRECTORY}cpm-src/)
 set(CPM_INC_DIRECTORY ${INC_DIRECTORY}cpm-include/)
 
 set(CPM-SOURCES main.cpp
-    ${CPM_SRC_DIRECTORY}CPM.cpp)
+    ${CPM_SRC_DIRECTORY}CPM.cpp
+    ${COMMON_SRC})
 
 add_executable(cpm ${CPM-SOURCES})
 
 target_compile_definitions(cpm PUBLIC _CPM_)
 
-target_include_directories(cpm PUBLIC ${CPM_INC_DIRECTORY})
+target_include_directories(cpm PUBLIC ${CPM_INC_DIRECTORY} ${INC_DIRECTORY})
+
+install(TARGETS cpm PUBLIC_HEADER DESTINATION bin)
 
 ##
 ## CPPM
@@ -43,10 +48,13 @@ set(CPPM_SRC_DIRECTORY ${SRC_DIRECTORY}cppm-src/)
 set(CPPM_INC_DIRECTORY ${INC_DIRECTORY}cppm-include/)
 
 set(CPPM-SOURCES main.cpp
-    ${CPPM_SRC_DIRECTORY}CPPM.cpp)
+    ${CPPM_SRC_DIRECTORY}CPPM.cpp
+    ${COMMON_SRC})
 
 add_executable(cppm ${CPPM-SOURCES})
 
 target_compile_definitions(cppm PUBLIC _CPPM_)
 
-target_include_directories(cppm PUBLIC ${CPPM_INC_DIRECTORY})
+target_include_directories(cppm PUBLIC ${CPPM_INC_DIRECTORY} ${INC_DIRECTORY})
+
+install(TARGETS cppm PUBLIC_HEADER DESTINATION bin)

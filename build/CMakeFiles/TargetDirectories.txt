@@ -1,0 +1,8 @@
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/cpm.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/cppm.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/edit_cache.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/rebuild_cache.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/list_install_components.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/install.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/install/local.dir
+/Users/lamyeemanick/Documents/Personnal projects/cpm-cppm/build/CMakeFiles/install/strip.dir

@@ -13,7 +13,7 @@
 
 class CPM {
     public:
-        CPM(std::vector<std::string> args);
+        CPM(std::vector<std::string> &args);
         ~CPM();
 
     protected:
