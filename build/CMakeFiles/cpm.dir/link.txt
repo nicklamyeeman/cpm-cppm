@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/cpm.dir/main.cpp.o CMakeFiles/cpm.dir/src/cpm-src/CPM.cpp.o CMakeFiles/cpm.dir/src/CommandLine.cpp.o -o ../bin/cpm 

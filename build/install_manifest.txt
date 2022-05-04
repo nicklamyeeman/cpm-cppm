@@ -1,2 +1,0 @@
-/usr/local/bin/cpm
-/usr/local/bin/cppm
