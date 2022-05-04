@@ -16,7 +16,6 @@
     #include "CPM.hpp"
 #endif
 
-
 int main(int ac, char **av)
 {
     std::vector<std::string> args(av + 1, av + ac);

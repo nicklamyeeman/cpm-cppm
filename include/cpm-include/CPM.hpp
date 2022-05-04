@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** cpm
+** cpm-cppm
 ** File description:
 ** CPM
 */
@@ -8,10 +8,9 @@
 #ifndef CPM_HPP_
 #define CPM_HPP_
 
-#include <iostream>
-#include <vector>
+#include "PM.hpp"
 
-class CPM {
+class CPM : public PM {
     public:
         CPM(std::vector<std::string> &args);
         ~CPM();

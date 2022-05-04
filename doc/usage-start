@@ -1,8 +1,7 @@
-$name <command>
+$name start <project>
 
 Usage:
 
-$name install       install the dependency in your project
 $name start         create the project with some parameters
 
 All commands:
