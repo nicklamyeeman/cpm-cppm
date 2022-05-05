@@ -1,10 +1,3 @@
-/*
-** EPITECH PROJECT, 2022
-** cpm-cppm
-** File description:
-** $Name
-*/
-
 #ifndef $NAME_HPP_
 #define $NAME_HPP_
 

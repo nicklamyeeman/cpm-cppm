@@ -3,14 +3,14 @@ SRC		=		src/$Name.cpp		\
 
 INC		=		-Iinclude
 
-CFLAGS	+=		$(INC) -W -Werror -Wall -Wextra
+CPPFLAGS+=		$(INC) -W -Werror -Wall -Wextra
 
 OBJ		=		$(SRC:.cpp=.o)
 
 NAME	=		$name
 
 all:	$(OBJ)
-		g++ -o $(NAME)
+		g++ -o $(NAME) $(OBJ)
 
 clean:
 		rm -rdf $(OBJ)

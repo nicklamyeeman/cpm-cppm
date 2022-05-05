@@ -10,7 +10,7 @@ OBJ		=		$(SRC:.c=.o)
 NAME	=		$name
 
 all:	$(OBJ)
-		gcc -o $(NAME)
+		gcc -o $(NAME) $(OBJ)
 
 clean:
 		rm -rdf $(OBJ)

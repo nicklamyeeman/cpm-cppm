@@ -93,7 +93,7 @@ class Usage {
 
         void usageInterpreter(T pm, V args, std::string const &found)
         {
-            std::regex interpret("\\$\\w+");
+            std::regex interpret("\\$[a-zA-Z]+");
 
             for (std::sregex_iterator i = std::sregex_iterator(this->_usage.begin(), this->_usage.end(), interpret); i != std::sregex_iterator(); i++) {
                 std::smatch match = *i;
