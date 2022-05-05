@@ -1,9 +1,0 @@
-$name install <dependancy>
-
-Usage:
-
-$name install        install the dependency in your project
-
-All commands:
-
-    $cmds

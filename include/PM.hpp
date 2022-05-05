@@ -8,10 +8,12 @@
 #ifndef PM_HPP_
 #define PM_HPP_
 
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <iostream>
 #include <string>
+#include <vector>
+#include <map>
+
 #include "Debug.hpp"
 #include "Usage.hpp"
 
@@ -20,16 +22,16 @@ class PM {
         PM(std::vector<std::string> &args);
         ~PM();
 
-        void start(void);
-        void install(void);
+        void start(std::vector<std::string> &args);
+        void install(std::vector<std::string> &args);
 
-        std::string getName(void);
-        std::vector<std::string> getCmds(void);
-        std::string getCmdsStr(void);
+        std::string getName(void) const;
+        std::map<std::string, std::function<void(std::vector<std::string> &)>> getCmds(void) const;
+        std::string getCmdsStr(void) const;
 
     protected:
         std::string _name;
-        std::vector<std::string> _cmds;
+        std::map<std::string, std::function<void(std::vector<std::string> &)>> _cmds;
     private:
 };
 

@@ -15,9 +15,10 @@ CPPM::CPPM(std::vector<std::string> &args) : PM(args)
     Debug<CPPM> Debug(*this);
     #endif
 
-    if ((args.size() == 0) || 
-        (args.size() > 0 && (args.at(0).compare("-h") == 0 || args.at(0).compare("--help") == 0)))
-        Usage<CPPM, std::vector<std::string>> Usage(*this, args);
+    Usage<CPPM, std::vector<std::string>> _usage_(*this, args);
+    if (_usage_.isValidCmd()) {
+        this->_cmds[args.at(0)](args);
+    }
 }
 
 CPPM::~CPPM()

@@ -1,9 +1,0 @@
-$name start <project>
-
-Usage:
-
-$name start         create the project with some parameters
-
-All commands:
-
-    $cmds

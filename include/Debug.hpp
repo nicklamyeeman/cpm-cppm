@@ -13,7 +13,7 @@ class Debug {
     public:
     Debug(T pm) : _name(pm.getName())
     {
-        std::string name = _name;
+        std::string name = this->_name;
         std::transform(name.begin(), name.end(), name.begin(), ::toupper);
         std::cout << name << " constructor" << std::endl;
 
