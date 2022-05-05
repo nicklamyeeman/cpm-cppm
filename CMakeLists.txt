@@ -18,7 +18,7 @@ set(COMMON_SRC  ${SRC_DIRECTORY}PM.cpp
 
 project(cpm VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(CPM_SRC_DIRECTORY ${SRC_DIRECTORY}cpm-src/)
@@ -52,8 +52,8 @@ set(CPPM_SRC_DIRECTORY ${SRC_DIRECTORY}cppm-src/)
 set(CPPM_INC_DIRECTORY ${INC_DIRECTORY}cppm-include/)
 
 set(CPPM-SOURCES    main.cpp
-${CPPM_SRC_DIRECTORY}CPPM.cpp
-${COMMON_SRC}
+                    ${CPPM_SRC_DIRECTORY}CPPM.cpp
+                    ${COMMON_SRC}
 )
 
 add_executable(cppm ${CPPM-SOURCES})

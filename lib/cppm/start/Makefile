@@ -1,16 +1,16 @@
-SRC		=		src/$name.c		\
-				main.c
+SRC		=		src/$Name.cpp		\
+				main.cpp
 
 INC		=		-Iinclude
 
 CFLAGS	+=		$(INC) -W -Werror -Wall -Wextra
 
-OBJ		=		$(SRC:.c=.o)
+OBJ		=		$(SRC:.cpp=.o)
 
 NAME	=		$name
 
 all:	$(OBJ)
-		gcc -o $(NAME)
+		g++ -o $(NAME)
 
 clean:
 		rm -rdf $(OBJ)

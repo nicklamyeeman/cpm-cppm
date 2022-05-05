@@ -9,7 +9,7 @@
 
 CPM::CPM(std::vector<std::string> &args) : PM(args)
 {
-    this->_name = std::string("cpm");
+    this->_className = std::string("cpm");
 
     #ifdef _DEBUG_
     Debug<CPM> debug(*this);

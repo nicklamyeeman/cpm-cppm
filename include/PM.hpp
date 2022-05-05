@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 #include <map>
 
 #include "Debug.hpp"
@@ -25,12 +27,16 @@ class PM {
         void start(std::vector<std::string> &args);
         void install(std::vector<std::string> &args);
 
-        std::string getName(void) const;
+        void loading(void);
+
+        std::string getClassName(void) const;
         std::map<std::string, std::function<void(std::vector<std::string> &)>> getCmds(void) const;
         std::string getCmdsStr(void) const;
 
     protected:
-        std::string _name;
+        std::string _className;
+        std::string _projectName;
+        bool _cmdDone;
         std::map<std::string, std::function<void(std::vector<std::string> &)>> _cmds;
     private:
 };

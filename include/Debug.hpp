@@ -11,7 +11,7 @@
 template <class T>
 class Debug {
     public:
-    Debug(T pm) : _name(pm.getName())
+    Debug(T pm) : _name(pm.getClassName())
     {
         std::string name = this->_name;
         std::transform(name.begin(), name.end(), name.begin(), ::toupper);

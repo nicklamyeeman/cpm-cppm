@@ -99,7 +99,7 @@ class Usage {
                 std::smatch match = *i;
                 std::string match_str = match.str();
                 if (match_str.compare("$name") == 0)
-                    this->replaceAll(this->_usage, match_str, pm.getName());
+                    this->replaceAll(this->_usage, match_str, pm.getClassName());
                 if (match_str.compare("$cmds") == 0)
                     this->replaceAll(this->_usage, match_str, this->getCmdsStr(found));
                 if (match_str.compare("$listcmds") == 0)
