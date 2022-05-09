@@ -7,6 +7,10 @@
 
 #include "PM.hpp"
 
+/**
+ * CONSTRUCTOR & DESTRUCTOR
+ */
+
 PM::PM(std::vector<std::string> &args)
 {
     std::map<std::string, std::function<void(std::vector<std::string> &)>> cmds {
@@ -19,6 +23,35 @@ PM::PM(std::vector<std::string> &args)
 PM::~PM()
 {
 }
+
+/**
+ * GETTERS & SETTERS
+ */
+
+std::string PM::getClassName(void) const
+{
+    return this->_className;
+}
+
+std::map<std::string, std::function<void(std::vector<std::string> &)>> PM::getCmds(void) const
+{
+    return this->_cmds;
+}
+
+std::string PM::getCmdsStr(void) const
+{
+    std::string cmds_str("");
+    std::for_each(this->_cmds.begin(), this->_cmds.end(), [&cmds_str](const std::pair<std::string, std::function<void(std::vector<std::string> &)>> &cmd) mutable {
+        cmds_str.append(cmd.first);
+        cmds_str.append(", ");
+    });
+    cmds_str.resize(cmds_str.size() - 2);
+    return cmds_str;
+}
+
+/**
+ * TOOLS
+ */
 
 void PM::loading(void)
 {
@@ -44,104 +77,69 @@ void PM::loading(void)
     }
 }
 
-void PM::scanDir(std::string path)
+void PM::importProject(void)
 {
-    for (const auto &entry : std::filesystem::directory_iterator(path)) {
-        if (std::filesystem::is_directory(entry.path()))
-            this->scanDir(entry.path());
-        else
-            this->_files.push_back(entry.path());
+    if (!std::filesystem::is_directory(this->_projectName)) {
+        std::filesystem::create_directory(this->_projectName);
+        std::filesystem::copy(std::string(_LIB_).append("/start"), this->_projectName, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+
+        Dir::scan(this->_files, this->_projectName);
+        
+        Regex::changeFilesNames(this->_files, this->_projectName);
+        Regex::changeFilesContent(this->_files, this->_projectName);
+
+    } else {
+        std::cerr << std::endl << this->_projectName << ": directory already exist." << std::endl;
     }
 }
 
-void PM::replaceAll(std::string &s, std::string const &toReplace, std::string const &replaceWith)
+void PM::importPackage(std::string &pack)
 {
-    std::ostringstream oss;
-    std::size_t pos = 0;
-    std::size_t prevPos;
+    Dir::getCurrentDirName(this->_projectName);
+    std::string libPath = std::string(_LIB_).append("/install/").append(pack);
 
-    while (true) {
-        prevPos = pos;
-        pos = s.find(toReplace, pos);
-        if (pos == std::string::npos)
-            break;
-        oss << s.substr(prevPos, pos - prevPos);
-        oss << replaceWith;
-        pos += toReplace.size();
+    if (!std::filesystem::is_directory(libPath)) {
+        std::cout << "No package " << pack << " found." << std::endl;
+    } else {
+        std::filesystem::copy(libPath, ".", std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+        Dir::scan(this->_files, libPath);
+        Regex::updateFiles(".c", this->_className, this->_files);
+        Regex::updateMakefile(this->_files);
+        Dir::scan(this->_files, libPath);
+        Regex::updateFiles(".h", this->_className, this->_files);
+        Regex::updateHeader(this->_className, this->_projectName, this->_files);
     }
-    oss << s.substr(prevPos);
-    s = oss.str();
 }
 
-std::string PM::changeFormatter(std::string match, std::string dest)
+/**
+ * COMMANDS
+ */
+
+void PM::install(std::vector<std::string> &args)
 {
-    if (match.compare("$name") == 0) {
-        std::transform(dest.begin(), dest.end(), dest.begin(), ::tolower);
-        return dest;
+    this->_cmdDone = false;
+
+    std::string pack;
+    if (args.size() == 1) {
+        std::cout << "Please write package name:" << std::endl << "> ";
+        std::cin >> pack;
+    } else {
+        pack = args.at(1);
     }
-    if (match.compare("$Name") == 0) {
-        std::transform(dest.begin(), dest.begin() + 1, dest.begin(), ::toupper);
-        std::transform(dest.begin() + 1, dest.end(), dest.begin() + 1, ::tolower);
-        return dest;
-    }
-    if (match.compare("$NAME") == 0) {
-        std::transform(dest.begin(), dest.end(), dest.begin(), ::toupper);
-        return dest;
-    }
-    return dest;
-}
+    std::cout << "Importing package " << pack << std::endl; 
+    std::thread load(&PM::loading, this);
 
-void PM::changeFilesNames(void)
-{
-    std::for_each(std::begin(this->_files), std::end(this->_files), [this](std::string &fileName) {
-        std::string oldFileName = fileName;
-        std::regex interpret("\\$[a-zA-Z]+");
+    this->importPackage(pack);
 
-        for (std::sregex_iterator i = std::sregex_iterator(fileName.begin(), fileName.end(), interpret); i != std::sregex_iterator(); i++) {
-            std::smatch match = *i;
-            std::string match_str = match.str();
-            std::string newProjectName = this->changeFormatter(match_str, this->_projectName);
-
-            this->replaceAll(fileName, match_str, newProjectName);
-            std::rename(oldFileName.c_str(), fileName.c_str());
-        }
-    });
-}
-
-void PM::changeFilesContent(void)
-{
-    std::for_each(std::begin(this->_files), std::end(this->_files), [this](std::string &fileName) {
-        std::string oldFileName = fileName;
-        std::ifstream oldFile(fileName);
-        std::ofstream newFile(fileName.append("-tmp"));
-
-        if (!oldFile.is_open() || !newFile.is_open())
-            std::cerr << "Error while creating files." << std::endl;
-        else {
-            std::string line;
-            while (getline(oldFile, line)) {
-                std::regex interpret("\\$[a-zA-Z]+");
-
-                for (std::sregex_iterator i = std::sregex_iterator(line.begin(), line.end(), interpret); i != std::sregex_iterator(); i++) {
-                    std::smatch match = *i;
-                    std::string match_str = match.str();
-                    std::string newLine = this->changeFormatter(match_str, this->_projectName);
-
-                    this->replaceAll(line, match_str, newLine);
-                }
-                newFile << line << std::endl;
-            }
-            oldFile.close();
-            newFile.close();
-            std::remove(oldFileName.c_str());
-            std::rename(fileName.c_str(), oldFileName.c_str());
-        }
-    });
+    this->_cmdDone = true;
+    load.join();
+    std::cout << std::endl;
 }
 
 void PM::start(std::vector<std::string> &args)
 {
     this->_cmdDone = false;
+
     if (args.size() == 1) {
         std::cout << "Starting new project. Choose a name:" << std::endl << "> ";
         std::cin >> this->_projectName;
@@ -151,46 +149,9 @@ void PM::start(std::vector<std::string> &args)
     std::cout << "Creating project: '" << this->_projectName << "'" << std::flush;
     std::thread load(&PM::loading, this);
 
-    if (!std::filesystem::is_directory(this->_projectName)) {
-        std::filesystem::create_directory(this->_projectName);
-        std::filesystem::copy(std::string(_LIB_).append("/start"), this->_projectName, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
-
-        this->scanDir(this->_projectName);
-        this->changeFilesNames();
-        this->changeFilesContent();
-    } else {
-        std::cerr << std::endl << this->_projectName << ": directory already exist." << std::endl;
-    }
+    this->importProject();
 
     this->_cmdDone = true;
-
     load.join();
     std::cout << std::endl;
-}
-
-void PM::install(std::vector<std::string> &args)
-{
-    std::cout << "install" << std::endl;
-    std::cout << this->_className << std::endl;
-}
-
-std::string PM::getClassName(void) const
-{
-    return this->_className;
-}
-
-std::map<std::string, std::function<void(std::vector<std::string> &)>> PM::getCmds(void) const
-{
-    return this->_cmds;
-}
-
-std::string PM::getCmdsStr(void) const
-{
-    std::string cmds_str("");
-    std::for_each(this->_cmds.begin(), this->_cmds.end(), [&cmds_str](const std::pair<std::string, std::function<void(std::vector<std::string> &)>> &cmd) mutable {
-        cmds_str.append(cmd.first);
-        cmds_str.append(", ");
-    });
-    cmds_str.resize(cmds_str.size() - 2);
-    return cmds_str;
 }

@@ -21,8 +21,11 @@
 #include <regex>
 #include <map>
 
-#include "Debug.hpp"
+#include "Replace.hpp"
 #include "Usage.hpp"
+#include "Regex.hpp"
+#include "Debug.hpp"
+#include "Dir.hpp"
 
 class PM {
     public:
@@ -38,11 +41,16 @@ class PM {
 
     protected:
         void loading(void);
+
+        void importProject(void);
+        void importPackage(std::string &pack);
+
         void changeFilesNames(void);
+        void getCurrentDirName(void);
         void changeFilesContent(void);
-        void scanDir(std::string path);
-        std::string changeFormatter(std::string match, std::string dest);
-        void replaceAll(std::string &s, std::string const &toReplace, std::string const &replaceWith);
+        void updateMakefile(std::vector<std::string> &files);
+        std::vector<std::string> findCompilingFiles(void);
+        void changeNameFormatter(std::string const &match, std::string &dest);
 
         bool _cmdDone;
         std::string _className;

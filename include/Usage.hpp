@@ -15,6 +15,8 @@
 #include <regex>
 #include <map>
 
+#include "Replace.hpp"
+
 template <typename T, typename V>
 class Usage {
     public:
@@ -99,32 +101,13 @@ class Usage {
                 std::smatch match = *i;
                 std::string match_str = match.str();
                 if (match_str.compare("$name") == 0)
-                    this->replaceAll(this->_usage, match_str, pm.getClassName());
+                    Replace::all(this->_usage, match_str, pm.getClassName());
                 if (match_str.compare("$cmds") == 0)
-                    this->replaceAll(this->_usage, match_str, this->getCmdsStr(found));
+                    Replace::all(this->_usage, match_str, this->getCmdsStr(found));
                 if (match_str.compare("$listcmds") == 0)
-                    this->replaceAll(this->_usage, match_str, pm.getCmdsStr());
+                    Replace::all(this->_usage, match_str, pm.getCmdsStr());
             }
             std::cerr << this->_usage << std::endl;
-        }
-
-        void replaceAll(std::string &s, std::string const &toReplace, std::string const &replaceWith)
-        {
-            std::ostringstream oss;
-            std::size_t pos = 0;
-            std::size_t prevPos;
-
-            while (true) {
-                prevPos = pos;
-                pos = s.find(toReplace, pos);
-                if (pos == std::string::npos)
-                    break;
-                oss << s.substr(prevPos, pos - prevPos);
-                oss << replaceWith;
-                pos += toReplace.size();
-            }
-            oss << s.substr(prevPos);
-            s = oss.str();
         }
 
     private:
