@@ -2,3 +2,4 @@
 bin/
 build/
 clean_env.sh
+tests/

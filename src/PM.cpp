@@ -105,6 +105,7 @@ void PM::importPackage(std::string &pack)
         Dir::scan(this->_files, libPath);
         Regex::updateFiles(".c", this->_className, this->_files);
         Regex::updateMakefile(this->_files);
+        
         Dir::scan(this->_files, libPath);
         Regex::updateFiles(".h", this->_className, this->_files);
         Regex::updateHeader(this->_className, this->_projectName, this->_files);

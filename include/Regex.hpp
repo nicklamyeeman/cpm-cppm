@@ -9,10 +9,12 @@
 #define REGEX_HPP_
 
 #include <algorithm>
+#include <exception>
 #include <iostream>
 #include <fstream>
 #include <regex>
 
+#include "OpenFile.hpp"
 #include "Replace.hpp"
 #include "Dir.hpp"
 

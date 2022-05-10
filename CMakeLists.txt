@@ -9,7 +9,8 @@ set(LIB_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIRECTORY})
 
-set(COMMON_SRC  ${SRC_DIRECTORY}Replace.cpp
+set(COMMON_SRC  ${SRC_DIRECTORY}OpenFile.cpp
+                ${SRC_DIRECTORY}Replace.cpp
                 ${SRC_DIRECTORY}Regex.cpp
                 ${SRC_DIRECTORY}Dir.cpp
                 ${SRC_DIRECTORY}PM.cpp

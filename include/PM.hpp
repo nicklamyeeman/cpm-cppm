@@ -8,18 +8,7 @@
 #ifndef PM_HPP_
 #define PM_HPP_
 
-#include <filesystem>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <cstdio>
 #include <thread>
-#include <regex>
-#include <map>
 
 #include "Replace.hpp"
 #include "Usage.hpp"
@@ -44,13 +33,6 @@ class PM {
 
         void importProject(void);
         void importPackage(std::string &pack);
-
-        void changeFilesNames(void);
-        void getCurrentDirName(void);
-        void changeFilesContent(void);
-        void updateMakefile(std::vector<std::string> &files);
-        std::vector<std::string> findCompilingFiles(void);
-        void changeNameFormatter(std::string const &match, std::string &dest);
 
         bool _cmdDone;
         std::string _className;

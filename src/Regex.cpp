@@ -49,16 +49,11 @@ void Regex::changeFilesNames(std::vector<std::string> &files, std::string &proje
 void Regex::changeFilesContent(std::vector<std::string> &files, std::string &projectName)
 {
     std::for_each(std::begin(files), std::end(files), [&](std::string &fileName) {
-        std::string oldFileName = fileName;
+        try {
+            OpenFile file(fileName);
 
-        std::ifstream oldFile(fileName);
-        std::ofstream newFile(fileName.append("-tmp"));
-
-        if (!oldFile.is_open() || !newFile.is_open())
-            std::cerr << "Error while creating files." << std::endl;
-        else {
-            std::string line;
-            while (getline(oldFile, line)) {
+            std::vector<std::string> fileContent = file.getData();
+            std::for_each(std::begin(fileContent), std::end(fileContent), [&](std::string &line) {
                 std::regex interpret("\\$[a-zA-Z]+");
 
                 for (std::sregex_iterator i = std::sregex_iterator(line.begin(), line.end(), interpret); i != std::sregex_iterator(); i++) {
@@ -68,12 +63,10 @@ void Regex::changeFilesContent(std::vector<std::string> &files, std::string &pro
                     Regex::changeNameFormatter(match_str, projectName);
                     Replace::all(line, match_str, projectName);
                 }
-                newFile << line << std::endl;
-            }
-            oldFile.close();
-            newFile.close();
-            std::remove(oldFileName.c_str());
-            std::rename(fileName.c_str(), oldFileName.c_str());
+            });
+            file.overwriteFile(fileContent);
+        } catch (std::exception &e) {
+            std::cerr << "Error while creating files." << std::endl;
         }
     });
 }
@@ -123,92 +116,73 @@ void Regex::updateFiles(std::string const &extension, std::string const &classNa
 
 void Regex::updateMakefile(std::vector<std::string> &files)
 {
-    std::string makefile("Makefile");
-    std::string makefileTmp("Makefile-tmp");
-    std::ifstream oldMakePath(makefile);
+    try {
+        int k = 0;
+        OpenFile file("Makefile");
 
-     if (!oldMakePath.is_open())
-        std::cerr << "Warning! No Makefile found." << std::endl;
-    else {
-        std::ofstream newMakePath(makefileTmp);
-        if (newMakePath.is_open()) {
-            std::string line;
-            while (getline(oldMakePath, line)) {
-                std::regex interpret("^SRC\\s.=\\s.");
+        std::vector<std::string> fileContent = file.getData();
 
-                for (std::sregex_iterator i = std::sregex_iterator(line.begin(), line.end(), interpret); i != std::sregex_iterator(); i++) {
-                    std::smatch match = *i;
-                    std::string match_str = match.str();
-                    Replace::all(line, match_str, "\t\t\t\t");
-                    newMakePath << "SRC\t\t=\t\t" << files.at(0) << "\t\t\\" << std::endl;
-                    std::for_each(std::begin(files) + 1, std::end(files), [&](std::string const &fileName) {
-                        newMakePath << "\t\t\t\t" << fileName << "\t\t\\" << std::endl;
-                    });
-                }
-                newMakePath << line << std::endl;
+        std::for_each(std::begin(fileContent), std::end(fileContent), [&](std::string &line) {
+            std::regex interpret("^SRC\\s.=\\s.");
+
+            for (std::sregex_iterator it = std::sregex_iterator(line.begin(), line.end(), interpret); it != std::sregex_iterator(); it++) {
+                std::smatch match = *it;
+                std::string match_str = match.str();
+
+                Replace::all(line, match_str, "\t\t\t\t");
+
+                std::string newLine("SRC\t\t=\t\t");
+                fileContent.insert(fileContent.begin() + k, newLine.append(files.at(0).append("\t\t\\")));
+                std::for_each(std::begin(files) + 1, std::end(files), [&](std::string const &fileName) {
+                    newLine = "";
+                    fileContent.insert(fileContent.begin() + k + 1, newLine.append("\t\t\t\t").append(fileName).append("\t\t\\"));
+                });
             }
-            oldMakePath.close();
-            newMakePath.close();
-            std::remove(makefile.c_str());
-            std::rename(makefileTmp.c_str(), makefile.c_str());
-        }
+            k += 1;
+        });
+        file.overwriteFile(fileContent);
+    } catch (std::exception &e) {
+        std::cerr << "Warning! No Makefile found." << std::endl;
     }
 }
 
 void Regex::updateHeader(std::string const &className, std::string &projectName, std::vector<std::string> &files)
 {
-    std::string ext(".h");
     std::string header("./include/");
+    header.append(projectName).append((className.compare("cpm") == 0) ? ".h" : ".hpp");
 
-    if (className.compare("cppm") == 0) {
-        ext.append("pp");
-        std::transform(projectName.begin(), projectName.begin() + 1, projectName.begin(), ::toupper);
-        std::transform(projectName.begin() + 1, projectName.end(), projectName.begin() + 1, ::tolower);
-    } else
-        std::transform(projectName.begin(), projectName.end(), projectName.begin(), ::tolower);
-    
-    header.append(projectName);
-    header.append(ext);
+    try {
+        int k = 0;
+        int pos = 0;
+        OpenFile file(header);
 
-    std::string headerTmp(header);
-    headerTmp.append("-tmp");
+        std::vector<std::string> fileContent = file.getData();
+        std::vector<std::string> include;
 
-    std::ifstream oldHeadPath(header);
+        std::for_each(std::begin(fileContent), std::end(fileContent), [&](std::string &line) {
+            std::regex interpret("^#define\\s(\\w+)_(\\w+)_$");
+            
+            for (std::sregex_iterator it = std::sregex_iterator(line.begin(), line.end(), interpret); it != std::sregex_iterator(); it++) {
+                std::smatch match = *it;
+                std::string match_str = match.str();
 
-     if (!oldHeadPath.is_open())
-        std::cerr << "Warning! No header ("<< header << ") found." << std::endl;
-    else {
-        std::ofstream newHeadPath(headerTmp);
-        if (newHeadPath.is_open()) {
-            std::vector<std::string> include;
-            std::string line;
-            while (getline(oldHeadPath, line)) {
-                newHeadPath << line << std::endl;
-
-                if (!include.empty()) {
-                    std::for_each(std::begin(include), std::end(include), [&](std::string const &includeFile) {
-                        newHeadPath << "#include \"" << includeFile << "\"" << std::endl;
-                    });
-                    include.clear();
-                }
-
-                std::regex interpret("^#define\\s(\\w+)_(\\w+)_$");
-                for (std::sregex_iterator i = std::sregex_iterator(line.begin(), line.end(), interpret); i != std::sregex_iterator(); i++) {
-                    std::smatch match = *i;
-                    std::string match_str = match.str();
-                    std::for_each(std::begin(files), std::end(files), [&](std::string const &fileName) {
-                        std::regex in("\\w+\\.\\w+$");
-                        for (std::sregex_iterator i = std::sregex_iterator(fileName.begin(), fileName.end(), in); i != std::sregex_iterator(); i++) {
-                            std::smatch m = *i;
-                            include.push_back(m.str());
-                        }
-                    });
-                }
+                std::for_each(std::begin(files), std::end(files), [&](std::string const &fileName) {
+                    std::regex in("\\w+\\.\\w+$");
+                    for (std::sregex_iterator i = std::sregex_iterator(fileName.begin(), fileName.end(), in); i != std::sregex_iterator(); i++) {
+                        std::smatch m = *i;
+                        include.push_back(m.str());
+                    }
+                });
+                pos = k + 1;
             }
-            oldHeadPath.close();
-            newHeadPath.close();
-            std::remove(header.c_str());
-            std::rename(headerTmp.c_str(), header.c_str());
-        }
+            k += 1;
+        });
+        std::for_each(std::begin(include), std::end(include), [&](std::string const &includeFile) {
+            std::string newLine = "";
+            fileContent.insert(fileContent.begin() + pos + 1, newLine.append("#include \"").append(includeFile).append("\""));
+        });
+        file.overwriteFile(fileContent);
+    } catch (std::exception &e) {
+        std::cerr << "Warning! No header ("<< header << ") found." << std::endl;
     }
 }
