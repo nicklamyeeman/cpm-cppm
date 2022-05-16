@@ -156,7 +156,7 @@ Project Link: [https://github.com/nicklamyeeman/my_sokoban](https://github.com/n
 [issues-shield]: https://img.shields.io/github/issues/nicklamyeeman/repo.svg?style=flat-square
 [issues-url]: https://github.com/nicklamyeeman/repo/issues
 [license-shield]: https://img.shields.io/github/license/nicklamyeeman/repo.svg?style=flat-square
-[license-url]: https://github.com/nicklamyeeman/repo/blob/master/LICENSE.txt
+[license-url]: https://github.com/nicklamyeeman/cpm-cppm/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/nicklamyeeman
 [product-screenshot]: images/screenshot.png

@@ -1,9 +1,11 @@
 /*
-** EPITECH PROJECT, 2022
-** cpm-cppm
-** File description:
-** Debug
+** Copyright (c) 2022, Nick LAM YEE MAN
+** All rights reserved.
+**
+** This source code is licensed under the BSD-style license found in the
+** LICENSE file in the root directory of this source tree. 
 */
+
 
 #ifndef DEBUG_HPP_
 #define DEBUG_HPP_

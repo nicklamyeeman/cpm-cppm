@@ -9,7 +9,7 @@ char *read_file(int fd, struct stat *st)
         fprintf(stderr, "Error: %s\n", strerror(errno));
         return (NULL);
     }
-	while (size != 0)
+	while (size >= 0)
 		size = read(fd, result, size);
     result[st->st_size] = '\0';
     return (result);

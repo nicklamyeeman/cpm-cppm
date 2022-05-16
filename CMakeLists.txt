@@ -1,3 +1,11 @@
+##
+## Copyright (c) 2022, Nick LAM YEE MAN
+## All rights reserved.
+##
+## This source code is licensed under the BSD-style license found in the
+## LICENSE file in the root directory of this source tree. 
+##
+
 cmake_minimum_required(VERSION 3.20)
 
 set(SRC_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/)
